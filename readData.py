@@ -1,4 +1,4 @@
-#import numpy as np
+import numpy as np
 import csv
 
 
@@ -17,22 +17,10 @@ for i in range (0, days):
     #print (flow)
     csvReader = csv.reader(csvFile)
     next(csvReader)
-    print (csvReader)
     for row in csvReader:
-	print (i)
-	print(flowList[i])
         flowList[i].append(row) 
         flow[i].append(int(row[4]))
-	print (row) 
-	print (flowList) 
-
-
-
-
-
-
-
-
+	
 
 
 for row in flowList[0]:
@@ -45,7 +33,11 @@ print(len(flow[1]))
 print(len(lanes))
 print(len(postMile))
 
-print (flowList)
-print (flow)
-        
 
+        
+np.asarray(flow)
+np.asarray(lanes)
+np.asarray(postMile)
+
+
+print (flow)
