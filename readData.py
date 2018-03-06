@@ -2,9 +2,10 @@ import numpy as np
 import csv
 
 
-days = 2
-flowList = [[], []]
-flow = [[], []]
+days = 31
+flowList =  [[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[]]
+flow = [[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[], [], [], [], [],[]]
+time = []
 postMile = []
 lanes = []
 
@@ -24,6 +25,7 @@ for i in range (0, days):
 
 
 for row in flowList[0]:
+    time.append(row[0])
     postMile.append(float(row[1]))
     lanes.append(int(row[5]))
 print(len(flowList[0]))
@@ -40,4 +42,4 @@ np.asarray(lanes)
 np.asarray(postMile)
 
 
-print (flow)
+
