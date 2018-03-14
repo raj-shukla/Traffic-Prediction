@@ -10,18 +10,31 @@ fPM = 61.06
 timeSlot = 24*12
 flowAtPoint = np.empty((0, timeSlot))
 
-L = 5
+
 n = np.array([10, 5, 4, 5, 3, 1])
-print (n)
+L = np.size(n) - 1
+print (L)
 
 W = []
-A = [[], [], [], [], [], []]
-Z = [[], [], [], [], [], []]
-dZ = [[], [], [], [], [], []]
+A = []
+Z = []
+dZ = []
+dW = []
+dA = []
+
+for i  in range (0, L+1):
+    A.append([])
+    Z.append([])
+    dZ.append([])
+    dW.append([])
+    dA.append([])
+
+
 data = np.array([[3, 4], [5, 2], [4, 5], [2, 7], [3, 2], [4, 2], [3, 5], [2, 1], [3, 4], [2, 6]])
-m = 2
-dW = [[], [], [], [], [], []]
-dA = [[], [], [], [], [], []]
+m = np.shape(data)[1]
+
+print (m)
+
 A[0] = data
 Z[0] = data
 Y = [[0.9,  0.7]]
@@ -34,6 +47,15 @@ def InitializeWeight(layers, structure):
         initialWeight.append(tmpMatrix)
     initialWeight.insert(0, None)
     return initialWeight
+    
+def FindError(Output):
+    #print("#######################")
+    error = -A[L]*np.log (Y) - (1-A[L])*np.log(1 - np.asarray(Y))
+    meanError = np.mean(error)
+    #print(error)
+    #print(meanError)
+    return meanError
+    
 
 def ForwardPropagation(W, A, data):
     for l in range(1, L + 1):
@@ -42,7 +64,6 @@ def ForwardPropagation(W, A, data):
 
 def BackPropagation(W, A, data, alpha):
     for l in range(L, 0, -1):
-        print ("#######################")
         if (l == L):
             dZ[l] = A[l] - Y
         else :
@@ -55,9 +76,13 @@ def BackPropagation(W, A, data, alpha):
 
 W = InitializeWeight(L, n)
 print (W)
-ForwardPropagation(W, A, data)
-BackPropagation(W, A, data, 0.9)
-
+alpha = 0.9
+for i in range(0, 1000):
+    ForwardPropagation(W, A, data)
+    cost = FindError(A)
+    print (cost)
+    BackPropagation(W, A, data, alpha)
+    alpha = alpha*0.9
 print (W)
 
 
