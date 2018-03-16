@@ -20,21 +20,40 @@ for i in range (0, days):
     next(csvReader)
     for row in csvReader:
         flowList[i].append(row) 
-        flow[i].append(int(row[4]))
-	
 
+
+
+for i in range(0, len(flowList[15])):
+	#print("##################")
+	#flowList[16][i][1]
+	#flowList[15][i][1]
+	if (flowList[16][i][1] != flowList[15][i][1]):
+		print("################")
+		print(flowList[16][i][1])
+		print(flowList[15][i][1])
+		print(i)
+		flowList[16].insert(i, [flowList[15][i][0], flowList[15][i][1], flowList[15][i][2], flowList[15][i][3], flowList[15][i][4]])
+		print(len(flowList[16]))
+	if (flowList[17][i][1] != flowList[15][i][1]):
+		flowList[17].insert(i, [flowList[18][i][0], flowList[18][i][1], flowList[18][i][2], flowList[18][i][3], flowList[18][i][4]])
+
+print(len(flowList[15]))
+print(len(flowList[16]))
+print(len(flowList[17]))
+'''	
+for i in range(0, days):
+	print("################")
+	print(i)
+	print(len(flowList[i]))	
+'''
+for i in range(0, days):
+	for row in flowList[i]:
+		flow[i].append(int(row[4]))
 
 for row in flowList[0]:
     time.append(row[0])
     postMile.append(float(row[1]))
     lanes.append(int(row[5]))
-print(len(flowList[0]))
-print(len(flowList[1]))
-print(len(flow[0]))
-print(len(flow[1]))
-print(len(lanes))
-print(len(postMile))
-
 
         
 np.asarray(flow)
