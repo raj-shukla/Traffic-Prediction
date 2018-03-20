@@ -40,7 +40,7 @@ for i in range(0, days):
 '''
 for i in range(0, days):
 	for row in flowList[i]:
-		flow[i].append(int(row[4]))
+		flow[i].append(float(row[4]))
 
 for row in flowList[0]:
     time.append(row[0])

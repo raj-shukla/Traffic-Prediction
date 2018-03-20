@@ -15,8 +15,9 @@ points = 136
 flowAtPoint = np.empty((0, timeSlot))
 flowAtTime = np.empty((0, timeSlot ))
 print(np.max(flow))
+print(np.min(flow))
 flow = (flow - np.min(flow))/(np.max(flow) - np.min(flow))
-print(flow)
+print(flow - np.min(flow))
 
 
 indexT = np.where(postMile == fPM)
@@ -55,3 +56,5 @@ print (np.shape(nSlotTraffic))
 
 inputArray = pSlotTraffic
 outputArray = nSlotTraffic
+
+print(outputArray)

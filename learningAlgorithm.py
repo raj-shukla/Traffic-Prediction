@@ -44,7 +44,7 @@ Y = predictionData.outputArray
 def InitializeWeight(layers, structure):
     initialWeight = [] 
     for l in range(0, layers):
-        tmpMatrix = (np.random.rand(n[l+1], n[l]))*10
+        tmpMatrix = (np.random.rand(n[l+1], n[l]))
         initialWeight.append(tmpMatrix)
     initialWeight.insert(0, None)
     return initialWeight
@@ -54,6 +54,11 @@ def FindError(Output):
     #print(1 - np.asarray(Y))
     #error = -np.asarray(Y)*np.log (A[L]) - (1-np.asarray(Y))*np.log(1 - A[L])
     error = np.sqrt((Y - A[L])*(Y-A[L]))
+	
+    print(np.size(Y))
+    print(np.size(A[L]))
+    print(Y)
+    print(A[L])
     meanError = np.mean(error)
     return meanError
     
@@ -61,7 +66,7 @@ def FindError(Output):
 def ForwardPropagation(W, A, data):
     for l in range(1, L + 1):
         Z[l] = np.dot(W[l], A[l-1])
-        print(-Z[l])
+        #print(-Z[l])
         A[l] = 1/(1+ np.exp(-Z[l]))
         #print("##############")
         #print(A[l])
@@ -82,8 +87,8 @@ def BackPropagation(W, A, data, alpha):
 W = InitializeWeight(L, n)
 print (W)
 alpha = 0.9
-for i in range(0, 1):
-    for i in range(0, 800):
+for i in range(0, 10):
+    for i in range(0, 800, 20):
         #print(data[:, i:i+5])
         ForwardPropagation(W, A, data[:, i:i+20])
         cost = FindError(A)
