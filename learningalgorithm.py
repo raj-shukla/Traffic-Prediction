@@ -18,7 +18,6 @@ m = np.shape(X)[1]
 
 
 
-
 def layer_sizes(X, Y):
     n_x = np.shape(X)[0] 
     n_h = 4
@@ -51,9 +50,6 @@ def initialize_parameters(n_x, n_h, n_y):
 
 
 
-
-
-
 def forward_propagation(X, parameters):
 
     W1 = parameters['W1']
@@ -81,9 +77,6 @@ def forward_propagation(X, parameters):
 
 
 
-
-
-
 def compute_cost(A2, Y, parameters):
     
     #m = Y.shape[1] 
@@ -94,7 +87,6 @@ def compute_cost(A2, Y, parameters):
     cost = np.squeeze(cost)    
     assert(isinstance(cost, float))
     return cost
-
 
 
 
@@ -125,8 +117,6 @@ def backward_propagation(parameters, cache, X, Y):
 
 
 
-
-
 def update_parameters(parameters, grads, learning_rate = 1.2):
 
     W1 = parameters['W1']
@@ -150,8 +140,6 @@ def update_parameters(parameters, grads, learning_rate = 1.2):
                   "b2": b2}
     
     return parameters
-
-
 
 
 
@@ -185,14 +173,12 @@ def nn_model(X, Y, n_h, num_iterations = 10000, print_cost=False):
 
 
 
-
 #X_assess, Y_assess = nn_model_test_case()
 parameters = nn_model(X, Y, 4, num_iterations=10000, print_cost=True)
 print("W1 = " + str(parameters["W1"]))
 print("b1 = " + str(parameters["b1"]))
 print("W2 = " + str(parameters["W2"]))
 print("b2 = " + str(parameters["b2"]))
-
 
 
 
@@ -205,11 +191,9 @@ def predict(parameters, X):
 
 
 
-#parameters, X_assess = predict_test_case()
 predictions = predict(parameters, X)
 print("predictions")
 print(np.mean((np.sqrt((predictions - Y)*(predictions - Y)))/Y))
-
 
 
 
