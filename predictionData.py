@@ -1,5 +1,6 @@
 import numpy as np
 import readData
+#np.set_printoptions(threshold=np.nan)
 
 
 days = readData.days
@@ -57,4 +58,5 @@ print (np.shape(nSlotTraffic))
 inputArray = pSlotTraffic
 outputArray = nSlotTraffic
 
-print(outputArray)
+print (inputArray)
+print (outputArray)
