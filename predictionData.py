@@ -15,10 +15,10 @@ timeSlot = 24*12
 points = 136
 flowAtPoint = np.empty((0, timeSlot))
 flowAtTime = np.empty((0, timeSlot ))
-print(np.max(flow))
-print(np.min(flow))
+#print(np.max(flow))
+#print(np.min(flow))
 flow = (flow - np.min(flow))/(np.max(flow) - np.min(flow))
-print(flow - np.min(flow))
+#print(flow - np.min(flow))
 
 
 indexT = np.where(postMile == fPM)
@@ -30,7 +30,7 @@ for i in range (0, days):
     tmpArray = np.array([])
 
 
-print (np.shape(flowAtPoint))
+#print (np.shape(flowAtPoint))
 
 inputArray = []
 outputArray = []
@@ -49,14 +49,21 @@ for i in range(0, days):
         #print(flowAtPoint[i][j+nTimeSlot])
 
 pSlotTraffic = pSlotTraffic.T
-print (pSlotTraffic)
-print (nSlotTraffic)
+#print (pSlotTraffic)
+#print (nSlotTraffic)
 
 print (np.shape(pSlotTraffic))
 print (np.shape(nSlotTraffic))
 
 inputArray = pSlotTraffic
-outputArray = nSlotTraffic
+outputArray = np.array([nSlotTraffic])
+#np.reshape(outputArray, (1, inputArray.shape[1]))
+#outputArray = outputArray.tolist()
 
-print (inputArray)
+print (np.shape(inputArray))
+print (np.shape(outputArray))
+
+#print (inputArray)
 print (outputArray)
+
+

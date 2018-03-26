@@ -10,7 +10,7 @@ postMile = []
 lanes = []
 
 
-print(flow)
+#print(flow)
 
 for i in range (0, days):
     flowFile = "Data/Oct2017_Flow/pems_output_"  + str(i) + ".csv"

@@ -47,8 +47,8 @@ def InitializeWeight(layers, structure):
     initialWeight = [] 
     initialBias = []
     for l in range(0, layers):
-        tmpMatrix1 = (np.random.rand(n[l+1], n[l]))*np.sqrt(2.0/float(n[l]))
-	tmpMatrix2 = (np.random.rand(n[l+1], 1))
+        tmpMatrix1 = (np.random.randn(n[l+1], n[l]))*0.01
+	tmpMatrix2 = (np.zeros((n[l+1], 1)))
         initialWeight.append(tmpMatrix1)
 	initialBias.append(tmpMatrix2) 
     initialWeight.insert(0, None)
@@ -73,11 +73,11 @@ def ForwardPropagation(W, A, data):
     for l in range(1, L + 1):
         Z[l] = np.dot(W[l], A[l-1]) + b[l]
         #print(-Z[l])
-        #A[l] = 1/(1+ np.exp(-Z[l]))
+        A[l] = 1/(1+ np.exp(-Z[l]))
         print("################################################")
 	#A[l] = Z[l]
 	#A[l][A[l] < 0] = 0
-	A[l] = np.maximum(0.01*Z[l], Z[l])
+	#A[l] = np.maximum(0.01*Z[l], Z[l])
 	print(Z[l])
         print(A[l])
 
@@ -88,11 +88,11 @@ def BackPropagation(W, A, data, alpha):
             dZ[l] = A[l] - Y
 	    #print(dZ[l])
         else :
-            #dTerm = 1/(1+ np.exp(-Z[l]))
-            #dZ[l] = dA[l]* (dTerm*(1-dTerm))
-	    dZ[l] = dA[l]
-	    dZ[l][dZ[l] < 0] = 0.01
-	    dZ[l][dZ[l] > 0] = 1
+            dTerm = 1/(1+ np.exp(-Z[l]))
+            dZ[l] = dA[l]* (dTerm*(1-dTerm))
+	    #dZ[l] = dA[l]
+	    #dZ[l][dZ[l] < 0] = 0.01
+	    #dZ[l][dZ[l] > 0] = 1
         dW[l] = (np.dot(dZ[l], A[l-1].T))/m
         #print(dZ[l])
 	db[l] = (np.sum(dZ[l], axis=1, keepdims= True))/m
@@ -114,9 +114,9 @@ W = networkParam[0]
 b = networkParam[1]
 print (W)
 #print (b)
-alpha = 0.1
+alpha = 1.2
 for i in range(0, 1):
-    for i in range(0, 100):
+    for i in range(0, 10000):
         #print(data[:, i:i+5])
         #ForwardPropagation(W, A, data[:, i:i+5])
         ForwardPropagation(W, A, data)

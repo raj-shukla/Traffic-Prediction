@@ -193,6 +193,7 @@ def predict(parameters, X):
 
 predictions = predict(parameters, X)
 print("predictions")
+print(predictions)
 print(np.mean((np.sqrt((predictions - Y)*(predictions - Y)))/Y))
 
 
