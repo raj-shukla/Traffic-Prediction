@@ -96,7 +96,8 @@ def compute_cost(AL, Y):
 
     m = Y.shape[1]
 
-    cost = -np.sum(np.multiply(np.log(AL), Y) + np.multiply(np.log(1-AL), 1-Y))/m
+    #cost = -np.sum(np.multiply(np.log(AL), Y) + np.multiply(np.log(1-AL), 1-Y))/m
+    cost = np.sum(np.sqrt((AL - Y)*(AL-Y)))/m
     
     cost = np.squeeze(cost)      
     assert(cost.shape == ())
