@@ -41,14 +41,14 @@ def DataSet(fPM):
     tmpMatrix = np.array([])
     tmpMatrix2 = np.array([])
     for i in range(14, days):
-        for j in range (m, timeSlot - 12):
+        for j in range (m, timeSlot - 24):
 		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j - m: j - q, k])
 		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j-q:j, k - p:k + p +1])
 		    tmpMatrix = np.append(tmpMatrix, flowArray[i-2:i, j, k])
 		    #tmpMatrix = np.append(tmpMatrix, lanes[col])
 		    inputArray.append(tmpMatrix)
 		    outputArray.append([flowArray[i, j, k]])
-		    tmpMatrix2 = np.append(tmpMatrix2, flowArray[i, j:j+12, k])
+		    tmpMatrix2 = np.append(tmpMatrix2, flowArray[i, j:j+24, k])
 		    #print(np.shape(outputArray))
 		    #tmpMatrix2.reshape(1, np.shape(outputArray)[1])
 		    outputArrayList.append(np.array([tmpMatrix2]))

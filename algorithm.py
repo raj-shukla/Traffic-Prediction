@@ -47,19 +47,29 @@ test_y_List = predictionData.outputList
 
 parameters = L_layer_model(train_x, train_y, layers_dims, num_iterations = 10000, print_cost = True)
 pred_test, cost = functions.predict(test_x, test_y, parameters)
+avgError = functions.averageError(pred_test, test_y)
 
 
-print(pred_test)
+#print(pred_test)
 print(cost)
 print(np.shape(pred_test))
 print(np.shape(test_y))
+print(avgError)
 
-for i in range(0, 12):
+costList = []
+averageErrorList =[]
+for i in range(0, np.shape(test_y_List)[0]):
     print(np.shape(test_y_List[i]))
     pred_test, cost = functions.predict(test_x, test_y_List[i][:, 4000:4600], parameters)
     test_x[0] = pred_test
     print (cost)
-
+    costList.append(cost)
+    averageError = functions.averageError(pred_test, test_y_List[i][:, 4000:4600])
+    averageErrorList.append(averageError)
+    print(averageError)
+    
+print (costList)
+print(averageErrorList)
 '''
 plt.figure(1)
 x = np.arange(0, 500)

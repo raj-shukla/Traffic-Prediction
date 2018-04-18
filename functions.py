@@ -2,6 +2,12 @@ import numpy as np
 
 np.random.seed(1)
 
+def averageError(pred, Y):
+    m = Y.shape[1]
+    error = np.sum(np.absolute(pred - Y))
+    
+    return error/m
+
 def initialize_parameters(n_x, n_h, n_y):
   
     np.random.seed(1)    
