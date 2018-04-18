@@ -8,6 +8,7 @@ flow = np.array(readData.flow)
 flowList = np.array(readData.flowList)
 time = np.array(readData.time)
 postMile = np.array(readData.postMile)
+lanes = np.array(readData.lanes)
 
 flow = (flow - np.min(flow))/(np.max(flow) - np.min(flow))
 flowArray = []
@@ -17,41 +18,58 @@ for i, val in enumerate(flow):
 
 flowArray = np.asarray(flowArray)
 
-#print(flowArray[0][25][78])
-#print (np.shape(flowArray))
-#print(type(flowArray))
-
-inputArray = []
-outputArray = []
 timeSlot = 24*12
 points = 136
-fPM = 2.43
-m = 5
+#fPM = 2.43
+m = 6
 q =  3
 pTmp = 5
 p = (pTmp - 1)/2
-col = np.where(postMile == fPM)[0][0]
-#print (col)
-k = col
-tmpMatrix = np.array([])
-for i in range(0, days):
-    for j in range (m, timeSlot):
-        tmpMatrix = np.append(tmpMatrix, flowArray[i, j-q:j, k - p:k + p +1])
-        #print(flowArray[i][j-q:j])
-        #print(flowArray[i, j - m: j - q, k])
-        #print (tmpMatrix)
-        tmpMatrix = np.append(tmpMatrix, flowArray[i, j - m: j - q, k])
-        #print(tmpMatrix)
-        #print([flowArray[i, j, k]])
-        inputArray.append(tmpMatrix)
-        outputArray.append([flowArray[i, j, k]])
-        tmpMatrix = np.array([])
 
-#print ("##################")
-inputArray = np.array(inputArray).T
-outputArray = np.array(outputArray).T
-#print(np.shape(inputArray))
-#print(np.shape(outputArray))
+print(lanes) 
+print(postMile)
+print(np.shape(lanes))
+print(np.shape(postMile))
+print(np.where(postMile == 2.43))
+
+def DataSet(fPM):
+    inputArray = []
+    outputArray = []
+    outputArrayList = []
+    col = np.where(postMile == fPM)[0][0]
+    k = col
+    tmpMatrix = np.array([])
+    tmpMatrix2 = np.array([])
+    for i in range(14, days):
+        for j in range (m, timeSlot - 12):
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j - m: j - q, k])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j-q:j, k - p:k + p +1])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i-2:i, j, k])
+		    #tmpMatrix = np.append(tmpMatrix, lanes[col])
+		    inputArray.append(tmpMatrix)
+		    outputArray.append([flowArray[i, j, k]])
+		    tmpMatrix2 = np.append(tmpMatrix2, flowArray[i, j:j+12, k])
+		    #print(np.shape(outputArray))
+		    #tmpMatrix2.reshape(1, np.shape(outputArray)[1])
+		    outputArrayList.append(np.array([tmpMatrix2]))
+		    tmpMatrix = np.array([])
+		    tmpMatrix2 = np.array([])
+
+    inputArray = np.array(inputArray).T
+    outputArray = np.array(outputArray).T
+    outputArrayList = np.array(outputArrayList).T
+    return inputArray, outputArray, outputArrayList
+
+inputData, outputData, outputList = DataSet(2.43)
+
+
+print(np.shape(inputData))
+print(np.shape(outputData))
+print(np.shape(outputList))
+print(outputData)
+print(outputList)
+print(np.shape(outputList[0]))
+
 #print (inputArray)
          
 
