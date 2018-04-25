@@ -2,13 +2,15 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
+import time
+import csv
 import predictionData
 import functions
 
 #layers_dims = [5, 20, 7, 5, 1] 
-layers_dims = [20, 25, 25, 1] 
+#layers_dims = [20, 25, 25, 1] 
 
-def L_layer_model(X, Y, layers_dims, learning_rate = 1.5, num_iterations = 10000, print_cost=False):#lr was 0.009
+def L_layer_model(X, Y, layers_dims, learning_rate = 0.5, num_iterations = 10000, print_cost=False):#lr was 0.009
 
     np.random.seed(1)
     costs = []                  
@@ -37,27 +39,135 @@ def L_layer_model(X, Y, layers_dims, learning_rate = 1.5, num_iterations = 10000
     
     return parameters
 
-
-train_x = predictionData.inputData[:, 0:4000]
-train_y = predictionData.outputData[:, 0:4000]
-test_x = predictionData.inputData[:, 4000:4600]
-test_y = predictionData.outputData[:, 4000:4600]
-test_y_List = predictionData.outputList 
+layers_dims = [20, 25,  25, 1] 
 
 
+listPostMile = [51.72, 42.18, 31.83, 6.62]
+#listPostMile = [51.72]
+outList = []
+
+def Algorithm(inputData, outputData, outputList, parameters, param):
+
+    train_x = inputData[:, 0:4000]
+    train_y = outputData[:, 0:4000]
+    test_x =  inputData[:, 4000:4600]
+    test_y =  outputData[:, 4000:4600]
+    test_y_List = outputList 
+
+    if (param == True):
+        startTime = time.time()
+        parameters = L_layer_model(train_x, train_y, layers_dims, num_iterations = 10000, print_cost = True)
+        endTime = time.time()
+    t1 = time.time()
+    pred_test, cost = functions.predict(test_x, test_y, parameters)
+    t2 = time.time()
+    avgError = functions.averageError(pred_test, test_y)
+    outList.append(pred_test[0])
+    outList.append(test_y[0])
+    outList.append([cost])
+    outList.append([avgError])
+    if (param == True):
+        outList.append([endTime - startTime])
+    outList.append([t2 -t1])
+
+    costList = []
+    averageErrorList =[]
+
+    for j in range(0, np.shape(test_y_List)[0]):
+        print(np.shape(test_y_List[j]))
+        pred_test, cost = functions.predict(test_x, test_y_List[j][:, 4000:4600], parameters)
+        #test_x[0] = pred_test
+        #print(np.shape(test_x))
+        #print(np.shape(test_x[1:6-1, :]))
+        #print(np.shape(pred_test))
+        #print(np.shape(test_x[6+1: , :]))
+        #print("################")
+        #print(test_x[0:5, :])
+        #print("########")
+        #print(pred_test[:, 0:5])
+        #print(test_x[:, 0:5])
+        #print("####")
+        #print(test_x[6:, :])
+        test_x = np.concatenate((test_x[1:6, :], pred_test, test_x[6: , :]), 0)
+        print (cost)
+        costList.append(cost)
+        averageError = functions.averageError(pred_test, test_y_List[j][:, 4000:4600])
+        averageErrorList.append(averageError)
+        print(averageError)
+    
+    print (costList)
+    print(averageErrorList)
+    outList.append(costList)
+    outList.append(averageErrorList)
+
+for i in range(0, 4):
+    inputData, outputData, outputList = predictionData.DataSet(listPostMile [i])
+    Algorithm(inputData, outputData, outputList, None, True)
+
+
+def CostList(parameters):
+    costList = []
+    averageErrorList = []
+    for i in range(0 + predictionData.p, 136 - predictionData.p):
+        X, Y, Y_List = predictionData.DataSet(predictionData.postMile[i])
+        print(predictionData.postMile[i])
+        print(np.shape(X))
+        print(np.shape(Y[:, 4000:4600]))
+        pred_test, cost = functions.predict(X[:, 4000:4600], Y[:, 4000:4600], parameters)
+        averageError = functions.averageError(pred_test, Y[:, 4000:4600])
+        costList.append(cost)
+        averageErrorList.append(averageError)
+
+    print (costList)
+    print(averageErrorList)
+    outList.append(costList)
+    outList.append(averageErrorList)
+
+
+inputData, outputData, outputList = predictionData.DataSet(2.43)
+train_x = inputData[:, 0:4000]
+train_y = outputData[:, 0:4000]
+test_x =  inputData[:, 4000:4600]
+test_y =  outputData[:, 4000:4600]
+test_y_List = outputList
 parameters = L_layer_model(train_x, train_y, layers_dims, num_iterations = 10000, print_cost = True)
-pred_test, cost = functions.predict(test_x, test_y, parameters)
-avgError = functions.averageError(pred_test, test_y)
 
 
-#print(pred_test)
-print(cost)
-print(np.shape(pred_test))
-print(np.shape(test_y))
-print(avgError)
+for i in range(0, 4):
+    inputData, outputData, outputList = predictionData.DataSet(listPostMile [i])
+    Algorithm(inputData, outputData, outputList, parameters, False)
 
+
+CostList (parameters)
+
+print (outList)
+
+with open("prediction_results.csv", "w") as f:
+    writer = csv.writer(f)
+    writer.writerows(outList)
+
+'''
+learning_rate = 0
+for i in range (0, 10):
+    learning_rate = learning_rate + 0.2
+    parameters = L_layer_model(train_x, train_y, layers_dims, learning_rate, num_iterations = 10000, print_cost = True)
+    pred_test, cost = functions.predict(test_x, test_y, parameters)
+    avgError = functions.averageError(pred_test, test_y)
+
+
+    #print(pred_test)
+    print(cost)
+    print(np.shape(test_x))
+    print(np.shape(pred_test))
+    print(np.shape(test_y))
+    print(avgError)
+'''
+
+'''
 costList = []
 averageErrorList =[]
+
+
 for i in range(0, np.shape(test_y_List)[0]):
     print(np.shape(test_y_List[i]))
     pred_test, cost = functions.predict(test_x, test_y_List[i][:, 4000:4600], parameters)
@@ -70,6 +180,22 @@ for i in range(0, np.shape(test_y_List)[0]):
     
 print (costList)
 print(averageErrorList)
+'''
+
+'''
+for i in range(0 + predictionData.p, 136 - predictionData.p):
+    X, Y, Y_List = predictionData.DataSet(predictionData.postMile[i])
+    print(predictionData.postMile[i])
+    print(np.shape(X))
+    print(np.shape(Y[:, 4000:4600]))
+    pred_test, cost = functions.predict(X[:, 4000:4600], Y[:, 4000:4600], parameters)
+    averageError = functions.averageError(pred_test, Y[:, 4000:4600])
+    costList.append(cost)
+    averageErrorList.append(averageError)
+
+print (costList)
+print(averageErrorList)
+'''
 '''
 plt.figure(1)
 x = np.arange(0, 500)

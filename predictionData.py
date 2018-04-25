@@ -26,11 +26,6 @@ q =  3
 pTmp = 5
 p = (pTmp - 1)/2
 
-print(lanes) 
-print(postMile)
-print(np.shape(lanes))
-print(np.shape(postMile))
-print(np.where(postMile == 2.43))
 
 def DataSet(fPM):
     inputArray = []
@@ -42,15 +37,16 @@ def DataSet(fPM):
     tmpMatrix2 = np.array([])
     for i in range(14, days):
         for j in range (m, timeSlot - 24):
-		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j - m: j - q, k])
-		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j-q:j, k - p:k + p +1])
-		    tmpMatrix = np.append(tmpMatrix, flowArray[i-2:i, j, k])
+		    #tmpMatrix = np.append(tmpMatrix, flowArray[i, j - m: j - q, k])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j - m: j, k])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j-q:j, k - p:k])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i, j-q:j, k + 1:k + p +1])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i-14, j, k])
+		    tmpMatrix = np.append(tmpMatrix, flowArray[i-7, j, k])
 		    #tmpMatrix = np.append(tmpMatrix, lanes[col])
 		    inputArray.append(tmpMatrix)
 		    outputArray.append([flowArray[i, j, k]])
 		    tmpMatrix2 = np.append(tmpMatrix2, flowArray[i, j:j+24, k])
-		    #print(np.shape(outputArray))
-		    #tmpMatrix2.reshape(1, np.shape(outputArray)[1])
 		    outputArrayList.append(np.array([tmpMatrix2]))
 		    tmpMatrix = np.array([])
 		    tmpMatrix2 = np.array([])
@@ -64,11 +60,11 @@ inputData, outputData, outputList = DataSet(2.43)
 
 
 print(np.shape(inputData))
-print(np.shape(outputData))
-print(np.shape(outputList))
-print(outputData)
-print(outputList)
-print(np.shape(outputList[0]))
+#print(np.shape(outputData))
+#print(np.shape(outputList))
+#print(outputData)
+#print(outputList)
+#print(np.shape(outputList[0]))
 
 #print (inputArray)
          
