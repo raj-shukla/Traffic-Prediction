@@ -122,9 +122,9 @@ with open("correlation_analysis.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(outList)
 
-for i in range(0, len(outList)):
-    plt.plot(outList[i])
-    plt.show()
+#for i in range(0, len(outList)):
+    #plt.plot(outList[i])
+    #plt.show()
 
     
 

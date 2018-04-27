@@ -1,6 +1,6 @@
 import numpy as np
 import readData
-#np.set_printoptions(threshold=np.nan)
+np.set_printoptions(threshold=np.nan)
 
 
 days = readData.days
