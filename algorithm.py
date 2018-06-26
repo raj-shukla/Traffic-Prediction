@@ -140,7 +140,7 @@ with open("traffic.csv", "w") as f:
 '''
 
 
-with open("prediction_results.csv", "w") as f:
+with open("prediction_results_1.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(outList)
 
