@@ -1,135 +1,214 @@
 import numpy as np
-import readData
+import matplotlib.pyplot as plt
 import predictionData
-
-days = readData.days
-flow = np.array(readData.flow)
-flowList = np.array(readData.flowList)
-postMile = np.array(readData.postMile)
+np.set_printoptions(threshold=np.nan)
 
 
 
-data = predictionData.inputArray
-Y = predictionData.outputArray  
-n = np.array([5, 10, 1])
-L = np.size(n) - 1
+np.random.seed(1) 
 
-
-W = []
-b = []
-A = []
-Z = []
-dZ = []
-dW = []
-db = []
-dA = []
-
-for i  in range (0, L+1):
-    A.append([])
-    Z.append([])
-    dZ.append([])
-    dW.append([])
-    db.append([])
-    dA.append([])
-
-
-#data = np.array([[.35, .69, .23, .38, .52], [.3, .7, .2, .4, .5], [.33, .72, .23, .41, .48], [.31, .71, .19, .39, .45], [.29, .68, .18, .42, .55]])
+X = predictionData.inputArray
+Y = predictionData.outputArray
 
 
 
-A[0] = data
-Z[0] = data
-#Y = [[.3, .7, .2, .4, .5]]
+shape_X = np.shape(X)
+shape_Y = np.shape(Y)
+m = np.shape(X)[1]  
 
 
 
-def InitializeWeight(layers, structure):
-    initialWeight = [] 
-    initialBias = []
-    for l in range(0, layers):
-        tmpMatrix1 = (np.random.randn(n[l+1], n[l]))*0.01
-	tmpMatrix2 = (np.zeros((n[l+1], 1)))
-        initialWeight.append(tmpMatrix1)
-	initialBias.append(tmpMatrix2) 
-    initialWeight.insert(0, None)
-    initialBias.insert(0, None)
-    return [initialWeight, initialBias]
+def layer_sizes(X, Y):
+    n_x = np.shape(X)[0] 
+    n_h = 4
+    #n_y = np.shape(Y)[0] 
+    n_y = 1
+    return (n_x, n_h, n_y)
+
+
+
+def initialize_parameters(n_x, n_h, n_y):
+
+    np.random.seed(2) 
+
+    W1 = np.random.randn(n_h, n_x) * 0.01
+    b1 = np.zeros((n_h, 1))
+    W2 = np.random.randn(n_y, n_h) * 0.01
+    b2 = np.zeros((n_y, 1))
+
+
+    assert (W1.shape == (n_h, n_x))
+    assert (b1.shape == (n_h, 1))
+    assert (W2.shape == (n_y, n_h))
+    assert (b2.shape == (n_y, 1))
     
-def FindError(Output):
-    #print(Y)
-    #print(1 - np.asarray(Y))
-    #error = -np.asarray(Y)*np.log (A[L]) - (1-np.asarray(Y))*np.log(1 - A[L])
-    error = np.sqrt((Y - A[L])*(Y-A[L]))
-	
-    #print(np.size(Y))
-    #print(np.size(A[L]))
-    #print(Y)
-    #print(A[L])
-    meanError = np.mean(error)
-    return meanError
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+    return parameters
+
+
+
+def forward_propagation(X, parameters):
+
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+
+
+    Z1 = np.dot(W1, X) + b1
+    #A1 = np.tanh(Z1)
+    A1 = 1/(1 + np.exp(-Z1))
+    Z2 = np.dot(W2, A1) + b2
+    A2 = 1/(1 + np.exp(-Z2))
+
+
+    assert(A2.shape == (1, X.shape[1]))
+
     
-
-def ForwardPropagation(W, A, data):
-    for l in range(1, L + 1):
-        Z[l] = np.dot(W[l], A[l-1]) + b[l]
-        #print(-Z[l])
-        A[l] = 1/(1+ np.exp(-Z[l]))
-        print("################################################")
-	#A[l] = Z[l]
-	#A[l][A[l] < 0] = 0
-	#A[l] = np.maximum(0.01*Z[l], Z[l])
-	print(Z[l])
-        print(A[l])
-
-def BackPropagation(W, A, data, alpha):
-    m = np.shape(data)[1]
-    for l in range(L, 0, -1):
-        if (l == L):
-            dZ[l] = A[l] - Y
-	    #print(dZ[l])
-        else :
-            dTerm = 1/(1+ np.exp(-Z[l]))
-            dZ[l] = dA[l]* (dTerm*(1-dTerm))
-	    #dZ[l] = dA[l]
-	    #dZ[l][dZ[l] < 0] = 0.01
-	    #dZ[l][dZ[l] > 0] = 1
-        dW[l] = (np.dot(dZ[l], A[l-1].T))/m
-        #print(dZ[l])
-	db[l] = (np.sum(dZ[l], axis=1, keepdims= True))/m
-        dA[l-1] = np.dot(W[l].T, dZ[l])
-        W[l] = W[l] - alpha*dW[l]
-	b[l] = b[l] - alpha*db[l]
-	print("#############")
-	print(l)
-        print(dZ[l])
-        print(A[l-1])
-        print(W[l].T)
-        print(dA[l])
-	print(alpha)
-	print(alpha*dW[l])
-    #print(W)
-
-networkParam = InitializeWeight(L, n)
-W = networkParam[0]
-b = networkParam[1]
-print (W)
-#print (b)
-alpha = 1.2
-for i in range(0, 1):
-    for i in range(0, 10000):
-        #print(data[:, i:i+5])
-        #ForwardPropagation(W, A, data[:, i:i+5])
-        ForwardPropagation(W, A, data)
-        cost = FindError(A)
-        #print("######################")
-        #print (cost)
-        BackPropagation(W, A, data, alpha)
-        alpha = alpha*1
-print (W)
+    cache = {"Z1": Z1,
+             "A1": A1,
+             "Z2": Z2,
+             "A2": A2}
+    
+    return A2, cache
 
 
-prediction = ForwardPropagation(W, A, data)
-predictionError = FindError(A)
 
-#print (A[L])
-#print(predictionError)
+def compute_cost(A2, Y, parameters):
+    
+    #m = Y.shape[1] 
+    m = Y.shape[0]
+
+    logprobs = np.multiply(np.log(A2),Y) + np.multiply(np.log(1-A2),1-Y)
+    cost = -np.sum(logprobs)/m    
+    cost = np.squeeze(cost)    
+    assert(isinstance(cost, float))
+    return cost
+
+
+
+def backward_propagation(parameters, cache, X, Y):
+    m = X.shape[1]
+
+    W1 = parameters['W1']
+    W2 = parameters['W2']        
+    A1 = cache['A1']
+    A2 = cache['A2']
+
+
+    dZ2 = A2 - Y
+    dW2 = np.dot(dZ2, A1.T)/m
+    db2 = np.sum(dZ2, keepdims = True, axis = 1)/m
+    #dZ1 = np.dot(W2.T, dZ2)*(1 - np.power(A1, 2))
+    dZ1 = np.dot(W2.T, dZ2)*(A1*(1-A1))
+    dW1 = np.dot(dZ1, X.T)/m
+    db1 = np.sum(dZ1, keepdims = True, axis = 1)/m
+
+    
+    grads = {"dW1": dW1,
+             "db1": db1,
+             "dW2": dW2,
+             "db2": db2}
+    
+    return grads
+
+
+
+def update_parameters(parameters, grads, learning_rate = 1.2):
+
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    
+    dW1 = grads['dW1']
+    db1 = grads['db1']
+    dW2 = grads['dW2']
+    db2 = grads['db2']
+    
+    W1 = W1 - learning_rate*dW1
+    b1 = b1 - learning_rate*db1
+    W2 = W2 - learning_rate*dW2
+    b2 = b2 - learning_rate*db2
+    
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+    
+    return parameters
+
+
+
+def nn_model(X, Y, n_h, num_iterations = 10000, print_cost=False):
+
+    np.random.seed(3)
+    n_x = layer_sizes(X, Y)[0]
+    #n_y = layer_sizes(X, Y)[2]
+    n_y = 1
+    
+    parameters = initialize_parameters(n_x, n_h, n_y)
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+
+    for i in range(0, num_iterations):
+         
+        A2, cache = forward_propagation(X, parameters)
+        
+        cost = compute_cost(A2, Y, parameters)
+ 
+        grads = backward_propagation(parameters, cache, X, Y)
+ 
+        parameters = update_parameters(parameters, grads)
+
+        if print_cost and i % 1000 == 0:
+            print ("Cost after iteration %i: %f" %(i, cost))
+
+    return parameters
+
+
+
+#X_assess, Y_assess = nn_model_test_case()
+parameters = nn_model(X, Y, 4, num_iterations=10000, print_cost=True)
+print("W1 = " + str(parameters["W1"]))
+print("b1 = " + str(parameters["b1"]))
+print("W2 = " + str(parameters["W2"]))
+print("b2 = " + str(parameters["b2"]))
+
+
+
+def predict(parameters, X):
+
+    A2, cache = forward_propagation(X, parameters)
+    predictions = A2
+    
+    return predictions
+
+
+
+predictions = predict(parameters, X)
+print("predictions")
+print(predictions)
+print(np.mean((np.sqrt((predictions - Y)*(predictions - Y)))/Y))
+
+
+
+hidden_layer_sizes = [1, 2, 3, 4, 5, 20, 50]
+for i, n_h in enumerate(hidden_layer_sizes):
+    #plt.subplot(5, 2, i+1)
+    #plt.title('Hidden Layer of size %d' % n_h)
+    parameters = nn_model(X, Y, n_h, num_iterations = 5000)
+    #plot_decision_boundary(lambda x: predict(parameters, x.T), X, Y)
+    predictions = predict(parameters, X)
+    #accuracy = float((np.dot(Y,predictions.T) + np.dot(1-Y,1-predictions.T))/float(Y.size)*100)
+    cost = compute_cost(predictions, Y, parameters)
+    print ("Accuracy for {} hidden units: {} %".format(n_h, cost))
+
+
+
+
